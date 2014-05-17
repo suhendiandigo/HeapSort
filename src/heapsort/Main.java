@@ -26,15 +26,21 @@ public class Main {
 //            System.out.println(o[i]);
 //        }
 //        System.out.println("Done");
-        MaxHeap<Double> max=new MaxHeap();
-        Random r=new Random();
-        for (int i=0;i<100;i++){
-            max.add(r.nextDouble());
-        }
-        max.sort();
-        for (Object i:max.toArray()){
-            System.out.println(i);
-        }
+//        double average = 0;
+//        for (int j = 0; j < 100; j++) {
+            MaxHeap<Integer> max=new MaxHeap();
+            Random r=new Random();
+            for (int i=0;i<10000;i++){
+                max.add(r.nextInt());
+            }
+            max.sort();
+//            average += MaxHeap.COUNT;
+//            for (Object i:max.toArray()) {
+//                System.out.println(i);
+//            }
+            System.out.println(MaxHeap.COUNT);
+//        }
+//        System.out.println(average/100);
     }
     
     

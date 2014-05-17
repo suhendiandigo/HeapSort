@@ -12,6 +12,9 @@ import java.util.Queue;
  * @author Cuper
  */
 public class MaxHeap<T extends Comparable> {
+    
+    public static int COUNT = 0;
+    
     // ArrayList to store all the data;
     private ArrayList<Comparable> input;
     private ArrayList<T> datas;
@@ -56,6 +59,7 @@ public class MaxHeap<T extends Comparable> {
     
     // Sort the overall 
     public void sort() {
+        COUNT = 0;
         nodes = new ArrayList();
         // Convert the input into a Binary Tree
         int n = 0;
@@ -74,9 +78,28 @@ public class MaxHeap<T extends Comparable> {
             n++;
         }
         
-        for (int i = 0; i < nodes.size(); i++) {
-            datas.add((T)nodes.get(i).content);
+        datas.clear();
+        while (nodes.size() > 0) {
+            switchNode();
         }
+    }
+    
+    //Switch the node
+    private void switchNode() {
+        datas.add((T)root.content);
+        Node last = nodes.get(nodes.size() - 1);
+        root.content = (T)last.content;
+        nodes.remove(nodes.size() - 1);
+        if (last.parent != null) {
+            if (last == last.parent.left) {
+                last.parent.left = null;
+            }
+            if (last == last.parent.right) {
+                last.parent.right = null;
+            }
+            last.parent = null;
+        }
+        root.compareChild();
     }
     
     // Fill the node
@@ -88,13 +111,16 @@ public class MaxHeap<T extends Comparable> {
             nodes.add(node);
             parent.left = node;
             node.compareParent();
-        } else if (parent.right == null) { // Fill right child node
-            Comparable object = pull();
-            Node node = new Node(object);
-            node.parent = parent;
-            nodes.add(node);
-            parent.right = node;
-            node.compareParent();
+        }
+        if (input.size() > 0) {
+            if (parent.right == null) { // Fill right child node
+                Comparable object = pull();
+                Node node = new Node(object);
+                node.parent = parent;
+                nodes.add(node);
+                parent.right = node;
+                node.compareParent();
+            }
         }
     }
     
@@ -149,11 +175,54 @@ class Node<T extends Comparable> {
 
     // Compare with Parent, switch if greater
     public void compareParent() {
+        MaxHeap.COUNT++;
         if ((parent != null) && (content.compareTo(parent.content) > 0)) {
             T cntnt = content;
             content = (T)parent.content;
             parent.content = cntnt;
             parent.compareParent();
+        }
+    }
+    
+    public void compareChild() {
+        MaxHeap.COUNT++;
+        if ((left != null) && (right != null)) {
+            if (left.content.compareTo(right.content) > 0) {
+                if (left.content.compareTo(content) > 0) {
+                    T cntnt = (T)left.content;
+                    left.content = (T)content;
+                    content = cntnt;
+                    left.compareChild();
+                }
+            } else if (right.content.compareTo(left.content) > 0) {
+                if (right.content.compareTo(content) > 0) {
+                    T cntnt = (T)right.content;
+                    right.content = (T)content;
+                    content = cntnt;
+                    right.compareChild();
+                }
+            }
+        } else {
+            if ((left != null) && (left.content.compareTo(content) > 0)) {
+                T cntnt = (T)left.content;
+                left.content = (T)content;
+                content = cntnt;
+                left.compareChild();
+            } else if ((right != null) && (right.content.compareTo(content) > 0)) {
+                T cntnt = (T)right.content;
+                right.content = (T)content;
+                content = cntnt;
+                right.compareChild();
+            }
+        }
+    }
+    
+    public void compareTo(Node node) {
+        MaxHeap.COUNT++;
+        if ((node != null) && (content.compareTo(node.content) > 0)) {
+            T cntnt = content;
+            content = (T)node.content;
+            node.content = cntnt;
         }
     }
 }
